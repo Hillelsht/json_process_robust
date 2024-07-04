@@ -1,0 +1,7 @@
+watchdog
+asyncpg 
+retrying
+ijson
+aiofiles
+aioretry
+python-dotenv
