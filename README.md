@@ -18,23 +18,31 @@ This project monitors a directory for new JSON files containing vehicle status a
 2. **Create a Virtual Environment**:
     ```bash
     python3 -m venv env_json_robust
-    source env_json_robust/bin/activate  # On Windows, use `env_json_robust\Scripts\activate`
+    source env_json_robust/bin/activate  # On Windows, use `env_json_robust\Scripts\Activate.ps1`
     ```
 
 3. **Install Dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
+4. **Install DataBase**:
+    ```bash
+    # Ubuntu:
+    sudo apt update
+    sudo apt install postgresql postgresql-contrib
+    # Windows https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+    # Edit the PATH Environment Variable
+    ```
 
-4. **Configure Database**:
+5. **Configure Database**:
     - Ensure PostgreSQL is installed and running.
-    - Create a database named `vehicles_db`.
-    - Update the database connection parameters in `database.py`:
-      ```python
-      self.conn = psycopg2.connect(dbname='vehicles_db', user='your_user', password='your_password', host='localhost', port='5432')
+    - Create a user
+      ```bash
+      CREATE USER hillels WITH PASSWORD 'hillels' SUPERUSER;
       ```
+    - The database will be created within the Database class
 
-5. **Set the Directory to Watch**:
+6. **Set the Directory to Watch**:
     - Set the `directory_to_watch` variable in `main.py` to the directory where JSON files will be placed.
 
 ## Running the Project

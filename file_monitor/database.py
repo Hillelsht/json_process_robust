@@ -1,6 +1,6 @@
 import asyncpg
 import logging
-from aioretry import retry
+from tenacity import retry, stop_after_attempt, wait_fixed
 from dotenv import load_dotenv
 import os
 
@@ -12,14 +12,36 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class Database:
     def __init__(self):
         self.db_config = {
-            'user': os.getenv('DB_USER', 'your_user'),
-            'password': os.getenv('DB_PASSWORD', 'your_password'),
-            'database': os.getenv('DB_NAME', 'vehicles_db'),
+            'user': os.getenv('DB_USER', 'username'),
+            'password': os.getenv('DB_PASSWORD', 'password'),
+            'database': os.getenv('DB_NAME', 'database_name'),
             'host': os.getenv('DB_HOST', 'localhost'),
             'port': os.getenv('DB_PORT', '5432')
         }
 
+    async def create_database(self):
+        try:
+            conn = await asyncpg.connect(
+                user=self.db_config['user'],
+                password=self.db_config['password'],
+                database='postgres',  # Connect to the default database
+                host=self.db_config['host'],
+                port=self.db_config['port']
+            )
+            query = f"SELECT 1 FROM pg_database WHERE datname = '{self.db_config['database']}'"
+            result = await conn.fetch(query)
+            if not result:
+                await conn.execute(f'CREATE DATABASE {self.db_config["database"]}')
+                logging.info(f"Database '{self.db_config['database']}' created successfully.")
+            else:
+                logging.info(f"Database '{self.db_config['database']}' already exists.")
+            await conn.close()
+        except Exception as e:
+            logging.error("Error creating database: %s", e)
+            raise
+
     async def connect(self):
+        await self.create_database()  # Ensure the database exists before connecting
         self.conn = await asyncpg.connect(**self.db_config)
         await self.create_tables()
 
@@ -44,7 +66,7 @@ class Database:
             logging.error("Error creating tables: %s", e)
             raise
 
-    @retry(attempts=3, delay=2)
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def insert_objects_detection(self, data):
         try:
             async with self.conn.transaction():
@@ -55,7 +77,7 @@ class Database:
             logging.error("Error inserting objects detection data: %s", e)
             raise
 
-    @retry(attempts=3, delay=2)
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def insert_vehicle_status(self, data):
         try:
             async with self.conn.transaction():
@@ -65,4 +87,3 @@ class Database:
         except Exception as e:
             logging.error("Error inserting vehicle status data: %s", e)
             raise
-

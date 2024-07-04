@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 if __name__ == "__main__":
     monitor = FileMonitor()
     try:
-        asyncio.run(monitor.start())
+        monitor.loop.run_until_complete(monitor.start())
     except KeyboardInterrupt:
         logging.info("File monitoring stopped by user.")
     except Exception as e:

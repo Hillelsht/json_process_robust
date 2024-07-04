@@ -1,1 +1,8 @@
 watchdog
+pywin32
+ijson
+aiofiles
+python-dotenv
+asyncpg
+tenacity
+pytest

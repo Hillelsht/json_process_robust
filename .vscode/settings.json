@@ -1,0 +1,16 @@
+{
+    "editor.accessibilitySupport": "off",
+    "workbench.startupEditor": "none",
+    "files.autoSave": "onFocusChange",
+    "editor.formatOnSave": false,
+    "python.formatting.autopep8Args": [
+        "--ignore=E402"
+    ],
+    "python.analysis.typeCheckingMode": "basic",
+    "python.testing.pytestArgs": [
+        "test/"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+
+}

@@ -7,12 +7,13 @@ from watchdog.events import FileSystemEventHandler
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class NewFileHandler(FileSystemEventHandler):
-    def __init__(self, db):
+    def __init__(self, db, loop):
         self.db = db
+        self.loop = loop
 
     def on_created(self, event):
         if not event.is_directory:
-            asyncio.run(self.process_file(event.src_path))
+            self.loop.run_until_complete(self.process_file(event.src_path))
 
     async def process_file(self, file_path):
         if 'objects_detection' in file_path:
