@@ -10,9 +10,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 if __name__ == "__main__":
     monitor = FileMonitor()
+    loop = asyncio.get_event_loop()
     try:
-        monitor.loop.run_until_complete(monitor.start())
+        loop.run_until_complete(monitor.start())
     except KeyboardInterrupt:
         logging.info("File monitoring stopped by user.")
     except Exception as e:
         logging.error("Unexpected error: %s", e)
+    finally:
+        loop.close()
+

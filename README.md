@@ -1,11 +1,20 @@
+
 # Vehicle Status and Detection Processing
 
 ## Overview
-This project monitors a directory for new JSON files containing vehicle status and detection events, and updates a PostgreSQL database with the information.
+This project monitors a directory for new JSON files containing vehicle status and detection events, and updates a PostgreSQL database with the information. The JSON files are processed asynchronously to handle high load and large file sizes efficiently.
 
 ## Requirements
 - Python 3.11.2
 - PostgreSQL
+- `watchdog` library
+- `asyncpg` library
+- `tenacity` library
+- `ijson` library
+- `aiofiles` library
+- `python-dotenv` library
+- `pytest` library
+
 
 ## Setup Instructions
 
@@ -15,17 +24,22 @@ This project monitors a directory for new JSON files containing vehicle status a
     cd json_process_robust
     ```
 
-2. **Create a Virtual Environment**:
-    ```bash
-    python3 -m venv env_json_robust
-    source env_json_robust/bin/activate  # On Windows, use `env_json_robust\Scripts\Activate.ps1`
-    ```
-
-3. **Install Dependencies**:
+2. **Install Dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
-4. **Install DataBase**:
+
+3. **Create and Configure the .env File**:
+    Create a `.env` file in the project root with the following content:
+    ```ini
+    DB_NAME=vehicles_db
+    DB_USER=hillels
+    DB_PASSWORD=hillels
+    DB_HOST=localhost
+    DB_PORT=5432
+    DIRECTORY_TO_WATCH=/path/to/watch
+    ```
+4. **Install PostgreSQL**:
     ```bash
     # Ubuntu:
     sudo apt update
@@ -34,16 +48,13 @@ This project monitors a directory for new JSON files containing vehicle status a
     # Edit the PATH Environment Variable
     ```
 
-5. **Configure Database**:
+4. **Configure PostgreSQL**:
     - Ensure PostgreSQL is installed and running.
-    - Create a user
+    - Create a PostgreSQL SUPERUSER
       ```bash
       CREATE USER hillels WITH PASSWORD 'hillels' SUPERUSER;
       ```
-    - The database will be created within the Database class
-
-6. **Set the Directory to Watch**:
-    - Set the `directory_to_watch` variable in `main.py` to the directory where JSON files will be placed.
+    - The database will be created automatically if it does not exist.
 
 ## Running the Project
 
@@ -58,18 +69,24 @@ This project monitors a directory for new JSON files containing vehicle status a
     ```
 
 ## Project Structure
-
+- `data`
+- `data_test`
 - `file_monitor/`
   - `__init__.py`
   - `file_monitor.py`
   - `new_file_handler.py`
   - `database.py`
+- `tests/`
+  - `__init__.py`
+  - `test_database.py`
+  - `test_file_monitor.py`
+  - `test_new_file_handler.py`
 - `main.py`
 - `requirements.txt`
 - `README.md`
 - `DesignDocument.md`
+- `.env`
 
 ## Contact
-
 Hillel Shteyn 
 hishtein@gmail.com

@@ -9,11 +9,12 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class NewFileHandler(FileSystemEventHandler):
     def __init__(self, db, loop):
         self.db = db
-        self.loop = loop
+        self.loop = loop  # Pass the running event loop from the main application
 
     def on_created(self, event):
         if not event.is_directory:
-            self.loop.run_until_complete(self.process_file(event.src_path))
+            # Schedule the coroutine on the running event loop
+            self.loop.create_task(self.process_file(event.src_path))
 
     async def process_file(self, file_path):
         if 'objects_detection' in file_path:

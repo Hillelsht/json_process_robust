@@ -1,5 +1,4 @@
 watchdog
-pywin32
 ijson
 aiofiles
 python-dotenv

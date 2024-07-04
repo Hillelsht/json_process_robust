@@ -12,9 +12,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class Database:
     def __init__(self):
         self.db_config = {
-            'user': os.getenv('DB_USER', 'username'),
-            'password': os.getenv('DB_PASSWORD', 'password'),
-            'database': os.getenv('DB_NAME', 'database_name'),
+            'user': os.getenv('DB_USER', 'hillel'),
+            'password': os.getenv('DB_PASSWORD', 'hillel'),
+            'database': os.getenv('DB_NAME', 'vehicles_db'),
             'host': os.getenv('DB_HOST', 'localhost'),
             'port': os.getenv('DB_PORT', '5432')
         }
@@ -49,13 +49,13 @@ class Database:
         try:
             await self.conn.execute('''CREATE TABLE IF NOT EXISTS objects_detection (
                                         vehicle_id TEXT,
-                                        detection_time TIMESTAMP,
+                                        detection_time TEXT, 
                                         object_type TEXT,
                                         object_value INTEGER
                                      )''')
             await self.conn.execute('''CREATE TABLE IF NOT EXISTS vehicles_status (
                                         vehicle_id TEXT,
-                                        report_time TIMESTAMP,
+                                        report_time TEXT, 
                                         status TEXT
                                      )''')
             await self.conn.execute('CREATE INDEX IF NOT EXISTS idx_vehicle_id ON objects_detection(vehicle_id)')
