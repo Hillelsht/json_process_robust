@@ -4,21 +4,21 @@
 This project monitors a directory for new JSON files containing vehicle status and detection events, and updates a PostgreSQL database with the information.
 
 ## Requirements
-- Python 3.x
+- Python 3.11.2
 - PostgreSQL
 
 ## Setup Instructions
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/your-repo/vehicle-status-detection.git
-    cd vehicle-status-detection
+    git clone https://github.com/Hillelsht/json_process_robust.git
+    cd json_process_robust
     ```
 
 2. **Create a Virtual Environment**:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    python3 -m venv env_json_robust
+    source env_json_robust/bin/activate  # On Windows, use `env_json_robust\Scripts\activate`
     ```
 
 3. **Install Dependencies**:
