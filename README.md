@@ -20,8 +20,8 @@ This project monitors a directory for new JSON files containing vehicle status a
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/Hillelsht/json_process_robust.git
-    cd json_process_robust
+    git clone https://github.com/Hillelsht/vehicle-data-pipeline-robust.git
+    cd vehicle-data-pipeline-robust
     ```
 
 2. **Install Dependencies**:
@@ -33,11 +33,11 @@ This project monitors a directory for new JSON files containing vehicle status a
     Create a `.env` file in the project root with the following content:
     ```ini
     DB_NAME=vehicles_db
-    DB_USER=hillels
-    DB_PASSWORD=hillels
+    DB_USER=USERNAME
+    DB_PASSWORD=PASSWORD
     DB_HOST=localhost
     DB_PORT=5432
-    DIRECTORY_TO_WATCH=/path/to/watch
+    DIRECTORY_TO_WATCH=data/
     ```
 4. **Install PostgreSQL**:
     ```bash
@@ -70,7 +70,6 @@ This project monitors a directory for new JSON files containing vehicle status a
 
 ## Project Structure
 - `data`
-- `data_test`
 - `file_monitor/`
   - `__init__.py`
   - `file_monitor.py`

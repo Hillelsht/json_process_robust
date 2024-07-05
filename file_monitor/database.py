@@ -42,26 +42,27 @@ class Database:
 
     async def connect(self):
         await self.create_database()  # Ensure the database exists before connecting
-        self.conn = await asyncpg.connect(**self.db_config)
+        self.pool = await asyncpg.create_pool(**self.db_config)
         await self.create_tables()
 
     async def create_tables(self):
         try:
-            await self.conn.execute('''CREATE TABLE IF NOT EXISTS objects_detection (
+            async with self.pool.acquire() as conn:
+                await conn.execute('''CREATE TABLE IF NOT EXISTS objects_detection (
                                         vehicle_id TEXT,
-                                        detection_time TEXT, 
+                                        detection_time TEXT,  -- Store as TEXT
                                         object_type TEXT,
                                         object_value INTEGER
                                      )''')
-            await self.conn.execute('''CREATE TABLE IF NOT EXISTS vehicles_status (
+                await conn.execute('''CREATE TABLE IF NOT EXISTS vehicles_status (
                                         vehicle_id TEXT,
-                                        report_time TEXT, 
+                                        report_time TEXT,  -- Store as TEXT
                                         status TEXT
                                      )''')
-            await self.conn.execute('CREATE INDEX IF NOT EXISTS idx_vehicle_id ON objects_detection(vehicle_id)')
-            await self.conn.execute('CREATE INDEX IF NOT EXISTS idx_detection_time ON objects_detection(detection_time)')
-            await self.conn.execute('CREATE INDEX IF NOT EXISTS idx_vehicle_status_id ON vehicles_status(vehicle_id)')
-            await self.conn.execute('CREATE INDEX IF NOT EXISTS idx_report_time ON vehicles_status(report_time)')
+                await conn.execute('CREATE INDEX IF NOT EXISTS idx_vehicle_id ON objects_detection(vehicle_id)')
+                await conn.execute('CREATE INDEX IF NOT EXISTS idx_detection_time ON objects_detection(detection_time)')
+                await conn.execute('CREATE INDEX IF NOT EXISTS idx_vehicle_status_id ON vehicles_status(vehicle_id)')
+                await conn.execute('CREATE INDEX IF NOT EXISTS idx_report_time ON vehicles_status(report_time)')
         except Exception as e:
             logging.error("Error creating tables: %s", e)
             raise
@@ -69,8 +70,9 @@ class Database:
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def insert_objects_detection(self, data):
         try:
-            async with self.conn.transaction():
-                await self.conn.executemany('''INSERT INTO objects_detection 
+            async with self.pool.acquire() as conn:
+                async with conn.transaction():
+                    await conn.executemany('''INSERT INTO objects_detection 
                                                (vehicle_id, detection_time, object_type, object_value)
                                                VALUES ($1, $2, $3, $4)''', data)
         except Exception as e:
@@ -80,8 +82,9 @@ class Database:
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def insert_vehicle_status(self, data):
         try:
-            async with self.conn.transaction():
-                await self.conn.executemany('''INSERT INTO vehicles_status 
+            async with self.pool.acquire() as conn:
+                async with conn.transaction():
+                    await conn.executemany('''INSERT INTO vehicles_status 
                                                (vehicle_id, report_time, status)
                                                VALUES ($1, $2, $3)''', data)
         except Exception as e:

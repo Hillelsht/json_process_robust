@@ -6,6 +6,8 @@ from watchdog.events import FileSystemEventHandler
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+BATCH_SIZE = 1000  # Adjust the batch size based on your memory and performance requirements
+
 class NewFileHandler(FileSystemEventHandler):
     def __init__(self, db, loop):
         self.db = db
@@ -26,8 +28,14 @@ class NewFileHandler(FileSystemEventHandler):
         try:
             async with aiofiles.open(file_path, 'r') as file:
                 objects = ijson.items(file, 'objects_detection_events.item')
-                formatted_data = [(obj['vehicle_id'], obj['detection_time'], obj['object_type'], obj['object_value']) async for obj in objects]
-                await self.db.insert_objects_detection(formatted_data)
+                batch = []
+                async for obj in objects:
+                    batch.append((obj['vehicle_id'], obj['detection_time'], obj['object_type'], obj['object_value']))
+                    if len(batch) >= BATCH_SIZE:
+                        await self.db.insert_objects_detection(batch)
+                        batch = []
+                if batch:
+                    await self.db.insert_objects_detection(batch)
         except (ijson.JSONError, KeyError) as e:
             logging.error("Error processing objects detection file %s: %s", file_path, e)
         except Exception as e:
@@ -37,8 +45,14 @@ class NewFileHandler(FileSystemEventHandler):
         try:
             async with aiofiles.open(file_path, 'r') as file:
                 statuses = ijson.items(file, 'vehicle_status.item')
-                formatted_data = [(status['vehicle_id'], status['report_time'], status['status']) async for status in statuses]
-                await self.db.insert_vehicle_status(formatted_data)
+                batch = []
+                async for status in statuses:
+                    batch.append((status['vehicle_id'], status['report_time'], status['status']))
+                    if len(batch) >= BATCH_SIZE:
+                        await self.db.insert_vehicle_status(batch)
+                        batch = []
+                if batch:
+                    await self.db.insert_vehicle_status(batch)
         except (ijson.JSONError, KeyError) as e:
             logging.error("Error processing vehicles status file %s: %s", file_path, e)
         except Exception as e:

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime=s - %(levelname)s - %(message)s')
 
 if __name__ == "__main__":
     monitor = FileMonitor()
@@ -18,5 +18,6 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Unexpected error: %s", e)
     finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
 
