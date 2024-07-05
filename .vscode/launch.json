@@ -1,13 +1,24 @@
 {
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
       {
-        "name": "Python: Run main.py",
-        "type": "python",
-        "request": "launch",
-        "program": "${workspaceFolder}/main.py",
-        "console": "integratedTerminal"
+          "name": "Python: Run main.py",
+          "type": "python",
+          "request": "launch",
+          "program": "${workspaceFolder}/main.py",
+          "console": "integratedTerminal"
+      },
+      {
+          "name": "Python: Tests",
+          "type": "python",
+          "request": "launch",
+          "program": "${workspaceFolder}/tests",
+          "console": "integratedTerminal",
+          "args": [
+              "-m",
+              "pytest",
+              "--disable-warnings"
+          ]
       }
-    ]
-  }
-  
+  ]
+}

@@ -14,9 +14,9 @@ class Database:
     def __init__(self):
         # Initialize the database configuration using environment variables
         self.db_config = {
-            'user': os.getenv('DB_USER', 'hillel'),
-            'password': os.getenv('DB_PASSWORD', 'hillel'),
-            'database': os.getenv('DB_NAME', 'vehicles_db'),
+            'user': os.getenv('DB_USER', 'DB_USER'),
+            'password': os.getenv('DB_PASSWORD', 'DB_PASSWORD'),
+            'database': os.getenv('DB_NAME', 'DB_NAME'),
             'host': os.getenv('DB_HOST', 'localhost'),
             'port': os.getenv('DB_PORT', '5432')
         }

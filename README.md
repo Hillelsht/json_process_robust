@@ -75,6 +75,7 @@ This project monitors a directory for new JSON files containing vehicle status a
   - `file_monitor.py`
   - `new_file_handler.py`
   - `database.py`
+- `logs`
 - `tests/`
   - `__init__.py`
   - `test_database.py`

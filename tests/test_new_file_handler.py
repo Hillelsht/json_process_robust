@@ -7,12 +7,25 @@ from unittest.mock import MagicMock
 
 @pytest.fixture
 def db(mocker):
+    """
+    Fixture to provide a mock database connection.
+    """
     return mocker.Mock()
 
+@pytest.fixture
+def loop():
+    """
+    Fixture to provide the event loop.
+    """
+    return asyncio.get_event_loop()
+
 @pytest.mark.asyncio
-async def test_process_objects_detection(db, mocker):
-    handler = NewFileHandler(db)
-    mock_data = '{"objects_detection_events":[{"vehicle_id":"ebab5f787798416fb2b8afc1340d7a4e","detection_time":"2022-06-05T21:02:34.546Z","object_type":"pedestrians","object_value":3},{"vehicle_id":"ebab5f787798416fb2b8afc1340d7a4e","detection_time":"2022-06-05T21:05:20.590Z","object_type":"cars","object_value":4},{"vehicle_id":"ebab5f787798416fb2b8afc1340d7a4e","detection_time":"2022-06-05T21:11:35.567Z","object_type":"trucks","object_value":4}]}'
+async def test_process_objects_detection(db, mocker, loop):
+    """
+    Test the process_objects_detection method to ensure objects detection data is processed and inserted correctly.
+    """
+    handler = NewFileHandler(db, loop)
+    mock_data = '{"objects_detection_events":[{"vehicle_id":"vid1","detection_time":"2022-06-05T21:02:34.546Z","object_type":"car","object_value":1}]}'
     mocker.patch('aiofiles.open', mocker.mock_open(read_data=mock_data))
     mocker.patch.object(db, 'insert_objects_detection', return_value=None)
     
@@ -20,9 +33,12 @@ async def test_process_objects_detection(db, mocker):
     db.insert_objects_detection.assert_called_once()
 
 @pytest.mark.asyncio
-async def test_process_vehicles_status(db, mocker):
-    handler = NewFileHandler(db)
-    mock_data = '{"vehicle_status":[{"vehicle_id":"ebab5f787798416fb2b8afc1340d7a4e","report_time":"2022-05-05T22:02:34.546Z","status":"driving"},{"vehicle_id":"ebae3f787798416fb2b8afc1340d7a6d","report_time":"2022-05-06T00:02:34.546Z","status":"accident"},{"vehicle_id":"qbae3f787798416fb2b8afc1340ddf19","report_time":"2022-05-09T00:02:34.546Z","status":"parking"}]}'
+async def test_process_vehicles_status(db, mocker, loop):
+    """
+    Test the process_vehicles_status method to ensure vehicle status data is processed and inserted correctly.
+    """
+    handler = NewFileHandler(db, loop)
+    mock_data = '{"vehicle_status":[{"vehicle_id":"vid1","report_time":"2022-05-05T22:02:34.546Z","status":"driving"}]}'
     mocker.patch('aiofiles.open', mocker.mock_open(read_data=mock_data))
     mocker.patch.object(db, 'insert_vehicle_status', return_value=None)
     
