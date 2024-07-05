@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     handlers=[
                         logging.StreamHandler(),  # Log to console
-                        logging.handlers.RotatingFileHandler('project_log.log', maxBytes=10485760, backupCount=5)  # Log to rotating file
+                        logging.handlers.RotatingFileHandler('logs/project_log.log', maxBytes=10485760, backupCount=5)  # Log to rotating file
                     ])
 
 if __name__ == "__main__":
