@@ -1,5 +1,4 @@
 # Design Document for Vehicle Status and Detection Processing
-# Design Document for Vehicle Status and Detection Processing
 
 ## Overview
 This document describes the design and architecture of the Vehicle Status and Detection Processing project, highlighting the key performance features implemented to handle high loads and large files efficiently.
@@ -47,18 +46,18 @@ This document describes the design and architecture of the Vehicle Status and De
 
 #### `objects_detection`
 - `vehicle_id` (TEXT)
-- `detection_time` (TEXT)  -- Stored as string
+- `detection_time` (TEXT)
 - `object_type` (TEXT)
 - `object_value` (INTEGER)
 
 #### `vehicles_status`
 - `vehicle_id` (TEXT)
-- `report_time` (TEXT)  -- Stored as string
+- `report_time` (TEXT)
 - `status` (TEXT)
 
 ### Design Choices
 
-1. **Database**: PostgreSQL was chosen for its robustness, ACID compliance, and familiarity.
+1. **Database**: PostgreSQL was chosen for its robustness, ACID compliance.
 2. **Indexing**: Indexes were added to `vehicle_id` and time columns to improve query performance.
 3. **File Handling**: The `watchdog` library was used to monitor the directory for new files efficiently.
 4. **Asynchronous Processing**: The `asyncpg`, `aiofiles`, and `ijson` libraries were used to handle large files and high loads efficiently.
@@ -83,6 +82,13 @@ This document describes the design and architecture of the Vehicle Status and De
 ## Future Enhancements
 - Implement more sophisticated caching for frequently accessed data.
 - Introduce more granular error handling and reporting mechanisms.
+- Database Sharding
+- Database Index Optimization
+- Data Partitioning
+- Data Backup and Recovery Strategies
+- Database Monitoring and Analytics
+- Data Compression
+- Distributed Processing: frameworks like Apache Spark
 
 ## Flow Chart
 

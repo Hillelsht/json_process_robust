@@ -14,7 +14,7 @@ class FileMonitor:
         Initialize the FileMonitor with the directory to watch and the event loop.
         """
         # Get the directory to watch from environment variables or use a default value
-        self.directory_to_watch = os.getenv('DIRECTORY_TO_WATCH', '/path/to/watch')
+        self.directory_to_watch = os.getenv('DIRECTORY_TO_WATCH', '/data')
         # Get the running event loop
         self.loop = asyncio.get_event_loop()
 
